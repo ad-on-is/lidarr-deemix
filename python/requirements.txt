@@ -1,0 +1,5 @@
+deemix==3.6.6
+deezer_py==1.3.7
+Flask==2.2.5
+mitmproxy==10.2.4
+waitress==3.0.0

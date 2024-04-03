@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "files": ["./deemix.ts", "./index.ts", "./lidarr.ts"],
+  "include": ["./*.ts"]
+}

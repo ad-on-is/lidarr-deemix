@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": [
+    "@tsconfig/node20/tsconfig.json"
+    // "@tsconfig/strictest/tsconfig.json"
+  ],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+
+  "include": ["./*.ts", "src/index.ts", "src/deemix.ts", "src/lidarr.ts"]
+}

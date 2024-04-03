@@ -1,0 +1,12 @@
+# Based on https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore
+
+# Logs
+
+logs
+*.log
+notes
+python/config
+certs
+__pycache__
+node_modules
+dist/*
