@@ -6,14 +6,14 @@
 
 ## 💡 How it works
 
-Lidarr pulls artist and album infos from their own api `api.lidarr.audio`, which pulls the data from MusicBrainz.
+Lidarr usually pulls artist and album infos from their own api <mark>api.lidarr.audio</mark>, which pulls the data from MusicBrainz.
 
-By providing a custom proxy, we can _hook into_ the requests/responses, and **_inject additional infos from deemix_**.
+By providing a custom proxy, we can _hook into_ the process _without modifying Lidarr itself_, and **_inject additional infos from deemix_**.
 
 #### To do that, this image does the following things:
 
 - Runs [mitmproxy](https://mitmproxy.org/) as a proxy (needs to be configured within Lidarr)
-- The proxy then redirects all api.lidarr.audio calls to an internally running NodeJS service
+- The proxy then **_redirects all_** <mark>api.lidarr.audio</mark> calls to an internally running **NodeJS service**
 - Executes `update-ca-certificates` within the Lidarr-container, to trust the proxy certificates
 
 ## 💻️ Installation
