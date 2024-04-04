@@ -6,15 +6,20 @@
 
 ## 💡 How it works
 
-Lidarr usually pulls artist and album infos from their own api <mark>api.lidarr.audio</mark>, which pulls the data from MusicBrainz.
+Lidarr usually pulls artist and album infos from their own api api.lidarr.audio, which pulls the data from MusicBrainz.
 
-By providing a custom proxy, we can _hook into_ the process _without modifying Lidarr itself_, and **_inject additional infos from deemix_**.
+However, MusicBrainz does not have many albums, especially for some regional _nieche_ artist.
 
-#### To do that, this image does the following things:
+This tool helps to enrich Lidarr, by providing a custom proxy, that _hooks into_ the process _without modifying Lidarr itself_, and **_injects additional albums from deemix_**.
 
-- Runs [mitmproxy](https://mitmproxy.org/) as a proxy (needs to be configured within Lidarr)
-- The proxy then **_redirects all_** <mark>api.lidarr.audio</mark> calls to an internally running **NodeJS service**
-- Executes `update-ca-certificates` within the Lidarr-container, to trust the proxy certificates
+#### To do that, the following steps are performed:
+
+- [mitmproxy](https://mitmproxy.org/) runs as a proxy
+- Lidarr needs to be configured to use that proxy.
+- The proxy then **_redirects all_** api.lidarr.audio calls to an internally running **NodeJS service** (_127.0.0.1:7171_)
+- That NodeJS service **enriches** the artists albums with the ones found in deemix
+- Lidarr has now additiona albums, and can do its thing.
+- Currently only albums are supported - _you can not import artists, that are not in MusicBrainz_
 
 ## 💻️ Installation
 
