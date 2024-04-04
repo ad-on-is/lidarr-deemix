@@ -8,7 +8,7 @@
 
 Lidarr usually pulls artist and album infos from their own api api.lidarr.audio, which pulls the data from MusicBrainz.
 
-However, MusicBrainz does not have many albums, especially for some regional _nieche_ artist.
+However, MusicBrainz does not have many albums, especially for some regional _niche_ artist.
 
 This tool helps to enrich Lidarr, by providing a custom proxy, that _hooks into_ the process _without modifying Lidarr itself_, and **_injects additional albums from deemix_**.
 
