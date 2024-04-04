@@ -1,0 +1,38 @@
+version: "3"
+services:
+  lidarr:
+    image: ghcr.io/hotio/lidarr:pr-plugins
+    restart: unless-stopped
+    environment:
+      - PUID:1000
+      - PGID:1000
+      - UMASK=022
+    container_name: lidarr
+    volumes:
+      - ./lidarr/config:/config
+      - ./downloads:/downloads
+      - ./music:/music
+      - ./lidarr-deemix-certs:/usr/local/share/ca-certificates # IMPORTANT - to update the ca-certificates
+
+  lidarr-deemix:
+    image: ghcr.io/ad-on-is/lidarr-deemix
+    container_name: lidarr-deemix
+    volumes:
+      - ./lidarr-deemix-certs:/root/.mitmproxy
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - LIDARR_CONTAINER=lidarr
+      - DEEMIX_ARL=xxxx
+
+  deemix: # optional if you use deemix as indexer/downloader
+    image: codefaux/deemix-for-lidarr
+    container_name: deemix
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=0022
+      - DEEMIX_SINGLE_USER=true
+    volumes:
+      - ./deemix:/deemix-gui/config
+      - ./downloads:/downloads

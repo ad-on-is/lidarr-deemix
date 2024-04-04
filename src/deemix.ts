@@ -1,6 +1,7 @@
 import _ from "lodash";
 const deemixUrl = "http://127.0.0.1:7272";
 import { getLidarArtist } from "./lidarr.js";
+import { titleCase, normalize } from "./helpers.js";
 
 function fakeId(id: any, type: string) {
   let p = "a";
@@ -102,14 +103,18 @@ async function deemixAlbums(name: string): Promise<any[]> {
 
   return albums.filter(
     (a) =>
-      a["artist"]["name"].toLowerCase() === name.toLowerCase() ||
+      normalize(a["artist"]["name"]) === normalize(name) ||
       a["artist"]["name"] === "Verschillende artiesten"
   );
 }
 
 export async function getAlbum(id: string) {
   const d = await deemixAlbum(id);
+
   const lidarr = await getLidarArtist(d["artist"]["name"]);
+  if (lidarr === null) {
+    return null;
+  }
   return {
     aliases: [],
     artistid: lidarr["id"],
@@ -139,7 +144,7 @@ export async function getAlbum(id: string) {
         oldids: [],
         releasedate: d["release_date"],
         status: "Official",
-        title: d["title"],
+        title: titleCase(d["title"]),
         track_count: d["nb_tracks"],
         tracks: d["tracks"]["data"].map((t: any, idx: number) => ({
           artistid: lidarr["id"],
@@ -156,7 +161,7 @@ export async function getAlbum(id: string) {
       },
     ],
     secondarytypes: d["title"].toLowerCase().includes("live") ? ["Live"] : [],
-    title: d["title"],
+    title: titleCase(d["title"]),
     type: "Album",
   };
 }
@@ -164,13 +169,15 @@ export async function getAlbum(id: string) {
 export async function getAlbums(name: string, existing: any[] = []) {
   let dalbums = await deemixAlbums(name);
 
-  dalbums = dalbums.filter((a) => !existing.includes(a["title"]));
+  existing = existing.map((e) => normalize(e));
+
+  dalbums = dalbums.filter((a) => !existing.includes(normalize(a["title"])));
   let dtoRalbums = dalbums.map((d) => ({
     Id: `${fakeId(d["id"], "album")}`,
     OldIds: [],
     ReleaseStatuses: ["Official"],
-    SecondaryTypes: [],
-    Title: d["title"],
+    SecondaryTypes: d["title"].toLowerCase().includes("live") ? ["Live"] : [],
+    Title: titleCase(d["title"]),
     LowerTitle: d["title"].toLowerCase(),
     Type: "Album",
   }));
@@ -195,10 +202,7 @@ export async function getArtists(lidarr: any, query: string) {
   if (lartist) {
     let dartist;
     for (const [i, d] of dartists.entries()) {
-      if (
-        (lartist["artist"]["artistname"] as string).toLowerCase() ===
-        (d["name"] as string).toLowerCase()
-      ) {
+      if (normalize(lartist["artist"]["artistname"]) === normalize(d["name"])) {
         dartist = d;
         didx = i;
         break;
@@ -241,18 +245,6 @@ export async function getArtists(lidarr: any, query: string) {
           CoverType: "Poster",
           Url: d["picture_xl"],
         },
-        {
-          CoverType: "Banner",
-          Url: d["picture_xl"],
-        },
-        {
-          CoverType: "Fanart",
-          Url: d["picture_xl"],
-        },
-        {
-          CoverType: "Logo",
-          Url: d["picture_xl"],
-        },
       ],
       links: [],
       type:
@@ -268,14 +260,15 @@ export async function getArtists(lidarr: any, query: string) {
 
 async function getAritstByName(name: string) {
   const artists = await deemixArtists(name);
-  const artist = artists.find(
-    (a) => (a["name"] as string).toLowerCase() === name.toLowerCase()
-  );
+  const artist = artists.find((a) => normalize(a["name"]) === normalize(name));
   return artist;
 }
 
 export async function getArtist(lidarr: any) {
   const artist = await getAritstByName(lidarr["artistname"]);
+  if (typeof artist === "undefined") {
+    return lidarr;
+  }
   let posterFound = false;
   for (const img of lidarr["images"] as any[]) {
     if (img["CoverType"] === "Poster") {

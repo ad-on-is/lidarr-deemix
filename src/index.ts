@@ -1,4 +1,4 @@
-import fetch, { type HeadersInit } from "node-fetch";
+import fetch from "node-fetch";
 import Fastify from "fastify";
 import {
   getArtists,
@@ -10,7 +10,9 @@ import {
 
 const lidarrApiUrl = "https://api.lidarr.audio";
 const fastify = Fastify({
-  logger: false,
+  logger: {
+    level: "error",
+  },
 });
 fastify.get("*", async (req, res) => {
   const u = new URL(`http://localhost${req.url}`);
@@ -26,11 +28,6 @@ fastify.get("*", async (req, res) => {
       nh[key] = value;
     }
   });
-
-  // headers.delete("host");
-  // headers.delete("connection");
-
-  // return { status };
 
   const url = `${u.pathname}${u.search}`;
   let data: any;
@@ -55,7 +52,7 @@ fastify.get("*", async (req, res) => {
     if (url.includes("-aaaa-")) {
       let id = url.split("/").pop()?.split("-").pop()?.replaceAll("a", "");
       lidarr = await deemixArtist(id!);
-      status = 200;
+      status = lidarr === null ? 404 : 200;
     } else {
       lidarr = await data.json();
       lidarr = await getArtist(lidarr);
@@ -65,7 +62,7 @@ fastify.get("*", async (req, res) => {
     if (url.includes("-bbbb-")) {
       let id = url.split("/").pop()?.split("-").pop()?.replaceAll("b", "");
       lidarr = await getAlbum(id!);
-      status = 200;
+      status = lidarr === null ? 404 : 200;
     } else {
       lidarr = await data.json();
     }

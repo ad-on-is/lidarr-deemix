@@ -9,5 +9,5 @@ def request(flow: http.HTTPFlow) -> None:
     # otherwise.
     if flow.request.pretty_host == "api.lidarr.audio":
         flow.request.scheme = "http"
-        flow.request.host = "localhost"
+        flow.request.host = "127.0.0.1"
         flow.request.port = 7171

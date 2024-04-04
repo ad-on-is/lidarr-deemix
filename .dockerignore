@@ -1,0 +1,6 @@
+node_modules
+deploy.sh
+python/config
+certs
+__pycache__
+dist/*

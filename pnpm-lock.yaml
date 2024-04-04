@@ -14,6 +14,9 @@ dependencies:
   fastify:
     specifier: ^4.26.2
     version: 4.26.2
+  latinize:
+    specifier: ^2.0.0
+    version: 2.0.0
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -37,6 +40,9 @@ devDependencies:
   '@tsconfig/strictest':
     specifier: ^2.0.5
     version: 2.0.5
+  '@types/latinize':
+    specifier: ^0.2.18
+    version: 0.2.18
   '@types/node':
     specifier: ^20.12.3
     version: 20.12.3
@@ -107,6 +113,10 @@ packages:
 
   /@tsconfig/strictest@2.0.5:
     resolution: {integrity: sha512-ec4tjL2Rr0pkZ5hww65c+EEPYwxOi4Ryv+0MtjeaSQRJyq322Q27eOQiFbuNgw2hpL4hB1/W/HBGk3VKS43osg==}
+    dev: true
+
+  /@types/latinize@0.2.18:
+    resolution: {integrity: sha512-QjX4tcVEOcqDakv96sLMA2ESMcxSJel5KHxmcBgeTlZI7v6gFx9Tjqmt5+Pp8ijfGGr6CxuXzDNYk8A/iZ/GiA==}
     dev: true
 
   /@types/lodash@4.17.0:
@@ -391,6 +401,10 @@ packages:
 
   /json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
+    dev: false
+
+  /latinize@2.0.0:
+    resolution: {integrity: sha512-bMWAnS0C6s9rNqahOEzBEIb9RWECgD1sfmDPws/YoFGAVbC3cjNGCS3Y1THhaQ5wtTJfrq1RO69IM2dGA0DuEg==}
     dev: false
 
   /light-my-request@5.12.0:

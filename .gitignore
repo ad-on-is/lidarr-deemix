@@ -10,3 +10,4 @@ certs
 __pycache__
 node_modules
 dist/*
+deploy.sh
