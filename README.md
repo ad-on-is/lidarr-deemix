@@ -1,8 +1,8 @@
-<h1 align="center">
+<div align="center">
 <img src="./images/logo.webp" height="200" /><br />
-Lidarr++Deemix <br />
-<small style="font-size: 1rem; font-style: italic">"If Lidarr and Deemix had a child"</small>
-</h1>
+<h1>Lidarr++Deemix</h1>
+<h4 style="font-style: italic">"If Lidarr and Deemix had a child"</h4>
+</div>
 
 ## 💡 How it works
 
