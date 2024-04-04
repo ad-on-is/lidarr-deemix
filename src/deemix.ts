@@ -162,7 +162,7 @@ export async function getAlbum(id: string) {
     ],
     secondarytypes: d["title"].toLowerCase().includes("live") ? ["Live"] : [],
     title: titleCase(d["title"]),
-    type: "Album",
+    type: d["nb_tracks"] === 1 ? "Single" : "Album",
   };
 }
 
