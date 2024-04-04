@@ -19,8 +19,9 @@ By providing a custom proxy, we can _hook into_ the requests/responses, and **_i
 ## 💻️ Installation
 
 > [!NOTE]
-> The folder `/lidarr-deemix-certs` must be mounted to `/usr/local/share/ca-certificates` within the Lidarr container
-> `/var/run/docker.sock/` is needed, so lidarr-deemix can connect to lidarr and execute `update-ca-certificates`. If this is an issue, you have to manually execute that command, each time you restart the Lidarr container.
+> The folder `/lidarr-deemix-certs` must be mounted to `/usr/local/share/ca-certificates` within the Lidarr container.
+
+> Also `/var/run/docker.sock/` is needed, so lidarr-deemix can connect to lidarr and execute `update-ca-certificates`. If this is an issue, you have to manually execute that command, each time you restart the Lidarr container.
 
 - Use the provided [docker-compose.yml](./docker-compose.yml) as an example.
 - Go to **Lidarr -> Settings -> General** and set the proxy to `lidarr-deemix` and port **8080**
