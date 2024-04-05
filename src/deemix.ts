@@ -45,7 +45,6 @@ async function deemixAlbum(id: string): Promise<any> {
 export async function deemixArtist(id: string): Promise<any> {
   const data = await fetch(`${deemixUrl}/artists/${id}`);
   const j = (await data.json()) as any;
-  console.log(j);
 
   return {
     Albums: [
