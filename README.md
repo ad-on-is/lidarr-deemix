@@ -4,6 +4,12 @@
 <h4 style="font-style: italic">"If Lidarr and Deemix had a child"</h4>
 </div>
 
+![container](https://github.com/ad-on-is/lidarr-deemix/actions/workflows/container.yml/badge.svg?branch=)
+[![Version](https://img.shields.io/github/tag/ad-on-is/lidarr-deemix.svg?style=flat)]()
+[![GitHub stars](https://img.shields.io/github/stars/ad-on-is/lidarr-deemix.svg?style=social&label=Star)]()
+[![GitHub watchers](https://img.shields.io/github/watchers/ad-on-is/lidarr-deemix.svg?style=social&label=Watch)]()
+[![GitHub forks](https://img.shields.io/github/forks/ad-on-is/lidarr-deemix.svg?style=social&label=Fork)]()
+
 ## 💡 How it works
 
 Lidarr usually pulls artist and album infos from their own api api.lidarr.audio, which pulls the data from MusicBrainz.
