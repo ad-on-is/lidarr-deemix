@@ -4,7 +4,9 @@ import { getLidarArtist } from "./lidarr.js";
 import { titleCase, normalize } from "./helpers.js";
 
 function fakeId(id: any, type: string) {
+  // artist
   let p = "a";
+
   if (type === "album") {
     p = "b";
   }
@@ -43,6 +45,7 @@ async function deemixAlbum(id: string): Promise<any> {
 export async function deemixArtist(id: string): Promise<any> {
   const data = await fetch(`${deemixUrl}/artists/${id}`);
   const j = (await data.json()) as any;
+  console.log(j);
 
   return {
     Albums: [
@@ -59,24 +62,22 @@ export async function deemixArtist(id: string): Promise<any> {
     ],
     artistaliases: [],
     artistname: j["name"],
-    sortname: j["name"],
     disambiguation: "",
-    status: "active",
-    overview: "",
-    rating: { Count: 0, Value: null },
+
     genres: [],
     id: `${fakeId(j["id"], "artist")}`,
     images: [{ CoverType: "Poster", Url: j["picture_xl"] }],
     links: [
       {
-        target: "https://www.divanhana.ba/",
-        type: "divanhana",
-      },
-      {
-        target: "https://www.discogs.com/artist/3876876",
-        type: "discogs",
+        target: j["link"],
+        type: "deezer",
       },
     ],
+    oldids: [],
+    overview: "!!--Imported from Deemix--!!",
+    rating: { Count: 0, Value: null },
+    sortname: j["name"],
+    status: "active",
     type: "Artist",
   };
 }
@@ -111,9 +112,21 @@ async function deemixAlbums(name: string): Promise<any[]> {
 export async function getAlbum(id: string) {
   const d = await deemixAlbum(id);
 
-  const lidarr = await getLidarArtist(d["artist"]["name"]);
+  let lidarr: any = await getLidarArtist(d["artist"]["name"]);
   if (lidarr === null) {
-    return null;
+    lidarr = {
+      id: fakeId(d["artist"]["id"], "artist"),
+      artistaliases: [],
+      artistname: d["artist"]["name"],
+      disambiguation: "",
+      genres: [],
+      images: [],
+      links: [],
+      oldids: [],
+      sortname: d["artist"]["name"],
+      status: "active",
+      type: "Artist",
+    };
   }
   return {
     aliases: [],
