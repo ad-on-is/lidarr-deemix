@@ -43,28 +43,29 @@ fastify.get("*", async (req, res) => {
   }
 
   let lidarr: any;
-  if (url.includes("/search") && url.includes("type=all")) {
+  try {
     lidarr = await data.json();
+  } catch (e) {
+    console.error(e);
+  }
+  if (url.includes("/v0.4/search") && url.includes("type=all")) {
     lidarr = await getArtists(lidarr, u.searchParams.get("query") as string);
   }
 
-  if (url.includes("/artist/")) {
+  if (url.includes("/v0.4/artist/")) {
     if (url.includes("-aaaa-")) {
       let id = url.split("/").pop()?.split("-").pop()?.replaceAll("a", "");
       lidarr = await deemixArtist(id!);
       status = lidarr === null ? 404 : 200;
     } else {
-      lidarr = await data.json();
       lidarr = await getArtist(lidarr);
     }
   }
-  if (url.includes("/album/")) {
+  if (url.includes("/v0.4/album/")) {
     if (url.includes("-bbbb-")) {
       let id = url.split("/").pop()?.split("-").pop()?.replaceAll("b", "");
       lidarr = await getAlbum(id!);
       status = lidarr === null ? 404 : 200;
-    } else {
-      lidarr = await data.json();
     }
   }
 
