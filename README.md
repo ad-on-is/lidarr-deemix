@@ -28,6 +28,9 @@ This tool helps to enrich Lidarr, by providing a custom proxy, that _hooks into_
 
 ## 💻️ Installation
 
+> [!WARNING]
+> This image does not come with Lidarr nor with the deemix-gui. It's an addition to your existing setup.
+
 - Use the provided [docker-compose.yml](./docker-compose.yml) as an example.
   - **LIDARR_CONTAINER** the name of the Lidarr container
   - **DEEMIX_ARL** your deezer ARL (get it from your browsers cookies)

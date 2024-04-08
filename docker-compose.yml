@@ -1,17 +1,11 @@
 version: "3"
 services:
   lidarr:
+    # your existing Lidarr (this is just an example) Should work with any other Lidarr variant (Lidarr on sterioids, etc...)
     image: ghcr.io/hotio/lidarr:pr-plugins
-    restart: unless-stopped
-    environment:
-      - PUID:1000
-      - PGID:1000
-      - UMASK=022
     container_name: lidarr
     volumes:
-      - ./lidarr/config:/config
-      - ./downloads:/downloads
-      - ./music:/music
+      # your existing volumes
       - ./lidarr-deemix-certs:/usr/local/share/ca-certificates # IMPORTANT - to update the ca-certificates
 
   lidarr-deemix:
@@ -26,7 +20,9 @@ services:
       - LIDARR_CONTAINER=lidarr
       - DEEMIX_ARL=xxxx
 
-  deemix: # optional if you use deemix as indexer/downloader
+  deemix:
+    # OPTIONAL!
+    # to use deemix as indexer/downloader, this works well in combination with ghcr.io/hotio/lidarr:pr-plugins
     image: codefaux/deemix-for-lidarr
     container_name: deemix
     restart: always
