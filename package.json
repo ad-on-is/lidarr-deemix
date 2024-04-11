@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "start": "tsc && ts-node --project tsconfig.tsnode.json dist/index",
-    "dev": "tsc-watch --onSuccess \"node ./dist/index.js\""
+    "dev": "tsc-watch --onSuccess \"node ./dist/index.js\"",
+    "dev:override": "OVERRIDE_MB=true tsc-watch --onSuccess \"node ./dist/index.js\""
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",

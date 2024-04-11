@@ -75,7 +75,7 @@ export async function deemixArtist(id: string): Promise<any> {
     oldids: [],
     overview: "!!--Imported from Deemix--!!",
     rating: { Count: 0, Value: null },
-    sortname: j["name"],
+    sortname: (j["name"] as string).split(" ").reverse().join(", "),
     status: "active",
     type: "Artist",
   };
@@ -122,10 +122,17 @@ export async function getAlbum(id: string) {
       images: [],
       links: [],
       oldids: [],
-      sortname: d["artist"]["name"],
+      sortname: (d["artist"]["name"] as string).split(" ").reverse().join(", "),
       status: "active",
       type: "Artist",
     };
+  }
+  let type =
+    (d["record_type"] as string).charAt(0).toUpperCase() +
+    (d["record_type"] as string).slice(1);
+
+  if (type === "Ep") {
+    type = "EP";
   }
   return {
     aliases: [],
@@ -174,7 +181,7 @@ export async function getAlbum(id: string) {
     ],
     secondarytypes: d["title"].toLowerCase().includes("live") ? ["Live"] : [],
     title: titleCase(d["title"]),
-    type: d["nb_tracks"] === 1 ? "Single" : "Album",
+    type: type,
   };
 }
 
@@ -245,11 +252,10 @@ export async function getArtists(lidarr: any, query: string) {
   }
 
   const dtolartists = dartists.map((d) => ({
-    album: null,
     artist: {
       artistaliases: [],
       artistname: d["name"],
-      sortname: d["name"],
+      sortname: (d["name"] as string).split(" ").reverse().join(", "),
       genres: [],
       id: `${fakeId(d["id"], "artist")}`,
       images: [
@@ -258,7 +264,12 @@ export async function getArtists(lidarr: any, query: string) {
           Url: d["picture_xl"],
         },
       ],
-      links: [],
+      links: [
+        {
+          target: d["link"],
+          type: "deezer",
+        },
+      ],
       type:
         (d["type"] as string).charAt(0).toUpperCase() +
         (d["type"] as string).slice(1),
@@ -299,6 +310,17 @@ export async function getArtist(lidarr: any) {
     lidarr["artistname"],
     lidarr["Albums"].map((a: any) => a["Title"])
   );
+  if (process.env.OVERRIDE_MB === "true") {
+    lidarr["images"] = [
+      {
+        CoverType: "Poster",
+        Url: artist!["picture_xl"],
+      },
+    ];
+  }
   lidarr["Albums"] = [...lidarr["Albums"], ...albums];
+
   return lidarr;
 }
+
+//

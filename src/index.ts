@@ -48,7 +48,7 @@ fastify.get("*", async (req, res) => {
   } catch (e) {
     console.error(e);
   }
-  if (url.includes("/v0.4/search") && url.includes("type=all")) {
+  if (url.includes("/v0.4/search")) {
     lidarr = await getArtists(lidarr, u.searchParams.get("query") as string);
   }
 
@@ -82,4 +82,7 @@ fastify.get("*", async (req, res) => {
 
 fastify.listen({ port: 7171, host: "0.0.0.0" }, (err, address) => {
   console.log("Lidarr++Deemix running at " + address);
+  if (process.env.OVERRIDE_MB === "true") {
+    console.log("Overriding MusicBrainz API with Deemix API");
+  }
 });
