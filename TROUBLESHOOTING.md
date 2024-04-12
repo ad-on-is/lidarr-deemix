@@ -47,3 +47,7 @@ mitmweb -s ./python/http-redirect-requests.py # this will open a new browser, wh
 # terminal 4 (Lidarr)
 ./_output/net6.0/linux-x64/Lidarr # this will open a new browser
 ```
+
+### Join our channel
+
+[Telegram](https://t.me/+_JzcldvJAoZiNmZk)
