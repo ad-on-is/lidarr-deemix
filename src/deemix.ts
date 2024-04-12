@@ -46,6 +46,8 @@ export async function deemixArtist(id: string): Promise<any> {
   const data = await fetch(`${deemixUrl}/artists/${id}`);
   const j = (await data.json()) as any;
 
+  console.log(j["albums"]["data"]);
+
   return {
     Albums: [
       ...j["albums"]["data"].map((a: any) => ({
@@ -187,19 +189,29 @@ export async function getAlbum(id: string) {
 
 export async function getAlbums(name: string, existing: any[] = []) {
   let dalbums = await deemixAlbums(name);
+  console.log(dalbums);
 
   existing = existing.map((e) => normalize(e));
 
   dalbums = dalbums.filter((a) => !existing.includes(normalize(a["title"])));
-  let dtoRalbums = dalbums.map((d) => ({
-    Id: `${fakeId(d["id"], "album")}`,
-    OldIds: [],
-    ReleaseStatuses: ["Official"],
-    SecondaryTypes: d["title"].toLowerCase().includes("live") ? ["Live"] : [],
-    Title: titleCase(d["title"]),
-    LowerTitle: d["title"].toLowerCase(),
-    Type: "Album",
-  }));
+  let dtoRalbums = dalbums.map((d) => {
+    let type =
+      (d["record_type"] as string).charAt(0).toUpperCase() +
+      (d["record_type"] as string).slice(1);
+
+    if (type === "Ep") {
+      type = "EP";
+    }
+    return {
+      Id: `${fakeId(d["id"], "album")}`,
+      OldIds: [],
+      ReleaseStatuses: ["Official"],
+      SecondaryTypes: d["title"].toLowerCase().includes("live") ? ["Live"] : [],
+      Title: titleCase(d["title"]),
+      LowerTitle: d["title"].toLowerCase(),
+      Type: type,
+    };
+  });
 
   dtoRalbums = _.uniqBy(dtoRalbums, "LowerTitle");
 
