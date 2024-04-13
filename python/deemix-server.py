@@ -78,7 +78,7 @@ def artist_top(artist_id):
 
 @app.route('/album/<album_id>/tracks')
 def album_tracks(album_id):
-    return dz.api.get_album_tracks(album_id, limit=200)
+    return dz.api.get_album_tracks(album_id)
 
 
 @app.route('/artists/<artist_id>/albums')
