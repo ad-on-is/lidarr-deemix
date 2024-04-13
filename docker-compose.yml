@@ -8,3 +8,4 @@ services:
     environment:
       - DEEMIX_ARL=xxxx
       - OVERRIDE_MB=false # optional, set to true to override MusicBrainz completely !!! CAUTION !!! will delete all artists/albums imported from MB
+      - PRIO_DEEMIX=true # prioritize Deemix albums over Lidarr

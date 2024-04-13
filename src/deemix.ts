@@ -332,7 +332,7 @@ export async function getArtist(lidarr: any) {
   }
 
   const albums = await getAlbums(lidarr["artistname"]);
-  const existing = lidarr["Albums"].map((a: any) => normalize(a["Title"]));
+  const existing = albums.map((a: any) => normalize(a["Title"]));
   if (process.env.OVERRIDE_MB === "true") {
     lidarr["images"] = [
       {
@@ -342,10 +342,19 @@ export async function getArtist(lidarr: any) {
     ];
     lidarr["Albums"] = albums;
   } else {
-    lidarr["Albums"] = [
-      ...lidarr["Albums"],
-      ...albums.filter((a) => !existing.includes(normalize(a["Title"]))),
-    ];
+    if (process.env.PRIO_DEEMIX === "true") {
+      lidarr["Albums"] = [
+        ...lidarr["Albums"].filter(
+          (a: any) => !existing.includes(normalize(a["Title"]))
+        ),
+        ...albums,
+      ];
+    } else {
+      lidarr["Albums"] = [
+        ...lidarr["Albums"],
+        ...albums.filter((a) => !existing.includes(normalize(a["Title"]))),
+      ];
+    }
   }
 
   return lidarr;

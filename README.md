@@ -39,6 +39,7 @@ This tool helps to enrich Lidarr, by providing a custom proxy, that _hooks into_
 
 - Use the provided [docker-compose.yml](./docker-compose.yml) as an example.
   - **DEEMIX_ARL=xxx** your deezer ARL (get it from your browsers cookies)
+  - **PRIO_DEEMIX=true** If albums with the same name exist, prioritize the ones comming from deemix
   - **OVERRIDE_MB=true** override MusicBrainz completely - **WARNING!** This will delete all your artists/albums imported from MusicBrainz.
 - Go to **Lidarr -> Settings -> General**
   - **Certificate Validation:** to _Disabled_
