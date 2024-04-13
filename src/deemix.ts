@@ -121,12 +121,13 @@ export async function getAlbum(id: string) {
   const d = await deemixAlbum(id);
 
   let lidarr: any = await getLidarArtist(d["artist"]["name"]);
-  if (lidarr === null) {
+  if (lidarr === null || process.env.OVERRIDE_MB === "true") {
     lidarr = {
       id: fakeId(d["artist"]["id"], "artist"),
       artistaliases: [],
       artistname: d["artist"]["name"],
       disambiguation: "",
+      overview: "!!--Imported from Deemix--!!",
       genres: [],
       images: [],
       links: [],
@@ -147,7 +148,7 @@ export async function getAlbum(id: string) {
     images: [{ CoverType: "Cover", Url: d["cover_xl"] }],
     links: [],
     oldids: [],
-    overview: "",
+    overview: "!!--Imported from Deemix--!!",
     rating: { Count: 0, Value: null },
     releasedate: d["release_date"],
     releases: [
@@ -188,12 +189,9 @@ export async function getAlbum(id: string) {
   };
 }
 
-export async function getAlbums(name: string, existing: any[] = []) {
-  let dalbums = await deemixAlbums(name);
+export async function getAlbums(name: string) {
+  const dalbums = await deemixAlbums(name);
 
-  existing = existing.map((e) => normalize(e));
-
-  dalbums = dalbums.filter((a) => !existing.includes(normalize(a["title"])));
   let dtoRalbums = dalbums.map((d) => ({
     Id: `${fakeId(d["id"], "album")}`,
     OldIds: [],
@@ -209,16 +207,23 @@ export async function getAlbums(name: string, existing: any[] = []) {
   return dtoRalbums;
 }
 
-export async function getArtists(lidarr: any, query: string) {
+export async function getArtists(
+  lidarr: any,
+  query: string,
+  isManual: boolean = true
+) {
   const dartists = await deemixArtists(query);
+
   let lartist;
   let lidx = -1;
   let didx = -1;
-  for (const [i, artist] of lidarr.entries()) {
-    if (artist["album"] === null) {
-      lartist = artist;
-      lidx = i;
-      break;
+  if (process.env.OVERRIDE_MB !== "true") {
+    for (const [i, artist] of lidarr.entries()) {
+      if (artist["album"] === null) {
+        lartist = artist;
+        lidx = i;
+        break;
+      }
     }
   }
   if (lartist) {
@@ -254,7 +259,7 @@ export async function getArtists(lidarr: any, query: string) {
     dartists.splice(didx, 1);
   }
 
-  const dtolartists = dartists.map((d) => ({
+  let dtolartists: any[] = dartists.map((d) => ({
     artist: {
       artistaliases: [],
       artistname: d["name"],
@@ -279,7 +284,24 @@ export async function getArtists(lidarr: any, query: string) {
     },
   }));
 
+  if (!isManual) {
+    dtolartists = dtolartists.map((a) => a.artist);
+    if (process.env.OVERRIDE_MB === "true") {
+      dtolartists = [
+        dtolartists.filter((a) => {
+          return (
+            normalize(a["artistname"]) === normalize(decodeURIComponent(query))
+          );
+        })[0],
+      ];
+    }
+  }
+
   lidarr = [...lidarr, ...dtolartists];
+
+  if (process.env.OVERRIDE_MB === "true") {
+    lidarr = dtolartists;
+  }
 
   return lidarr;
 }
@@ -309,10 +331,8 @@ export async function getArtist(lidarr: any) {
     });
   }
 
-  const albums = await getAlbums(
-    lidarr["artistname"],
-    lidarr["Albums"].map((a: any) => a["Title"])
-  );
+  const albums = await getAlbums(lidarr["artistname"]);
+  const existing = lidarr["Albums"].map((a: any) => normalize(a["Title"]));
   if (process.env.OVERRIDE_MB === "true") {
     lidarr["images"] = [
       {
@@ -320,8 +340,13 @@ export async function getArtist(lidarr: any) {
         Url: artist!["picture_xl"],
       },
     ];
+    lidarr["Albums"] = albums;
+  } else {
+    lidarr["Albums"] = [
+      ...lidarr["Albums"],
+      ...albums.filter((a) => !existing.includes(normalize(a["Title"]))),
+    ];
   }
-  lidarr["Albums"] = [...lidarr["Albums"], ...albums];
 
   return lidarr;
 }

@@ -7,17 +7,59 @@ import {
   getAlbum,
   deemixArtist,
 } from "./deemix.js";
+import { removeKeys } from "./helpers.js";
 
 const lidarrApiUrl = "https://api.lidarr.audio";
+const scrobblerApiUrl = "https://ws.audioscrobbler.com";
 const fastify = Fastify({
   logger: {
     level: "error",
   },
 });
-fastify.get("*", async (req, res) => {
+
+async function doScrobbler(req: any, res: any) {
+  let headers = req.headers;
   const u = new URL(`http://localhost${req.url}`);
   const method = req.method;
+
+  const body = req.body?.toString();
+  let status = 200;
+
+  let nh: any = {};
+
+  Object.entries(headers).forEach(([key, value]) => {
+    if (key !== "host" && key !== "connection") {
+      nh[key] = value;
+    }
+  });
+  const url = `${u.pathname}${u.search}`;
+  let data: any;
+  try {
+    data = await fetch(`${scrobblerApiUrl}${url}`, {
+      method: method,
+      body: body,
+      headers: nh,
+    });
+    status = data.status;
+  } catch (e) {
+    console.error(e);
+  }
+  res.statusCode = status;
+  res.headers = data.headers;
+  let json = await data.json();
+
+  if (process.env.OVERRIDE_MB === "true") {
+    json = removeKeys(json, "mbid");
+  }
+
+  return { newres: res, data: json };
+}
+
+async function doApi(req: any, res: any) {
   let headers = req.headers;
+  const u = new URL(`http://localhost${req.url}`);
+  const method = req.method;
+
   const body = req.body?.toString();
   let status = 200;
 
@@ -49,7 +91,11 @@ fastify.get("*", async (req, res) => {
     console.error(e);
   }
   if (url.includes("/v0.4/search")) {
-    lidarr = await getArtists(lidarr, u.searchParams.get("query") as string);
+    lidarr = await getArtists(
+      lidarr,
+      u.searchParams.get("query") as string,
+      url.includes("type=all")
+    );
   }
 
   if (url.includes("/v0.4/artist/")) {
@@ -59,6 +105,11 @@ fastify.get("*", async (req, res) => {
       status = lidarr === null ? 404 : 200;
     } else {
       lidarr = await getArtist(lidarr);
+      if (process.env.OVERRIDE_MB === "true") {
+        // prevent refetching from musicbrainz
+        status = 404;
+        lidarr = {};
+      }
     }
   }
   if (url.includes("/v0.4/album/")) {
@@ -73,11 +124,24 @@ fastify.get("*", async (req, res) => {
   console.log(status, method, url);
   res.statusCode = status;
   res.headers = data.headers;
-  return lidarr;
+  return { newres: res, data: lidarr };
   // return new Response(JSON.stringify(lidarr), {
   //   status: status,
   //   headers: data.headers,
   // });
+}
+
+fastify.get("*", async (req, res) => {
+  let headers = req.headers;
+  const host = headers["x-proxy-host"];
+  if (host === "ws.audioscrobbler.com") {
+    const { newres, data } = await doScrobbler(req, res);
+    res = newres;
+    return data;
+  }
+  const { newres, data } = await doApi(req, res);
+  res = newres;
+  return data;
 });
 
 fastify.listen({ port: 7171, host: "0.0.0.0" }, (err, address) => {
