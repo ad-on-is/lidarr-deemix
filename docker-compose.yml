@@ -1,36 +1,9 @@
 version: "3"
 services:
-  lidarr:
-    # your existing Lidarr (this is just an example) Should work with any other Lidarr variant (Lidarr on sterioids, etc...)
-    image: ghcr.io/hotio/lidarr:pr-plugins
-    container_name: lidarr
-    volumes:
-      # your existing volumes
-      - ./lidarr-deemix-certs:/usr/local/share/ca-certificates # IMPORTANT - to update the ca-certificates
-
   lidarr-deemix:
     image: ghcr.io/ad-on-is/lidarr-deemix
     container_name: lidarr-deemix
-    volumes:
-      - ./lidarr-deemix-certs:/root/.mitmproxy
-      - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      - lidarr
+    ports:
+      - 8080:8080 # optional, only if you want to expose the port to the host
     environment:
-      - LIDARR_CONTAINER=lidarr
       - DEEMIX_ARL=xxxx
-
-  deemix:
-    # OPTIONAL!
-    # to use deemix as indexer/downloader, this works well in combination with ghcr.io/hotio/lidarr:pr-plugins
-    image: codefaux/deemix-for-lidarr
-    container_name: deemix
-    restart: always
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - UMASK=0022
-      - DEEMIX_SINGLE_USER=true
-    volumes:
-      - ./deemix:/deemix-gui/config
-      - ./downloads:/downloads

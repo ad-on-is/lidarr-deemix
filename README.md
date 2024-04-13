@@ -28,13 +28,25 @@ This tool helps to enrich Lidarr, by providing a custom proxy, that _hooks into_
 
 ## 💻️ Installation
 
+> [!CAUTION]
+> If you have installed an older version, please adjust the Proxy settings as described below, otherwise the HTTP-requests will fail
+
 > [!WARNING]
 > This image does not come with Lidarr nor with the deemix-gui. It's an addition to your existing setup.
 
+> [!NOTE]
+> The previous setup required to map additional volumes for certificate validation. Thx to @codefaux, here's now a simpler way for installation.
+
 - Use the provided [docker-compose.yml](./docker-compose.yml) as an example.
-  - **LIDARR_CONTAINER** the name of the Lidarr container
-  - **DEEMIX_ARL** your deezer ARL (get it from your browsers cookies)
-- Go to **Lidarr -> Settings -> General** and set the proxy to `lidarr-deemix` and port **8080**
+  - **DEEMIX_ARL=xxx** your deezer ARL (get it from your browsers cookies)
+  - **OVERRIDE_MB=true** override MusicBrainz completely - **WARNING!** This will delete all your artists/albums imported from MusicBrainz.
+- Go to **Lidarr -> Settings -> General**
+  - **Certificate Validation:** to _Disabled_
+  - **Use Proxy:** ✅
+  - **Proxy Type:** HTTP(S)
+  - **Hostname:** container-name/IP of the machine where lidarr-deemix is running
+  - **Port:** 8080 (if using container-name), otherwise the port you exposed the service to
+  - **Bypass Proxy for local addresses:** ✅
 
 ![settings](./images/lidarr-deemix-conf.png)
 
