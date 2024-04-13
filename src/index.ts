@@ -1,11 +1,13 @@
 import fetch from "node-fetch";
 import Fastify from "fastify";
+import _ from "lodash";
 import {
-  getArtists,
+  search,
   getArtist,
-  getAlbums,
   getAlbum,
   deemixArtist,
+  deemixAlbum,
+  deemixTracks,
 } from "./deemix.js";
 import { removeKeys } from "./helpers.js";
 
@@ -91,7 +93,7 @@ async function doApi(req: any, res: any) {
     console.error(e);
   }
   if (url.includes("/v0.4/search")) {
-    lidarr = await getArtists(
+    lidarr = await search(
       lidarr,
       u.searchParams.get("query") as string,
       url.includes("type=all")

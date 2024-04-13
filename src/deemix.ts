@@ -36,10 +36,16 @@ async function deemixArtists(name: string): Promise<[]> {
   return j["data"] as [];
 }
 
-async function deemixAlbum(id: string): Promise<any> {
+export async function deemixAlbum(id: string): Promise<any> {
   const data = await fetch(`${deemixUrl}/albums/${id}`);
   const j = (await data.json()) as any;
   return j;
+}
+
+export async function deemixTracks(id: string): Promise<any> {
+  const data = await fetch(`${deemixUrl}/album/${id}/tracks`);
+  const j = (await data.json()) as any;
+  return j.data as [];
 }
 
 export async function deemixArtist(id: string): Promise<any> {
@@ -138,6 +144,8 @@ export async function getAlbum(id: string) {
     };
   }
 
+  const tracks = await deemixTracks(d["id"]);
+
   return {
     aliases: [],
     artistid: lidarr["id"],
@@ -153,27 +161,26 @@ export async function getAlbum(id: string) {
     releasedate: d["release_date"],
     releases: [
       {
-        country: ["Germany"],
+        country: ["Worldwide"],
         disambiguation: "",
         id: `${fakeId(d["id"], "release")}`,
         label: [d["label"]],
-        media: [
-          {
-            Format: "CD",
-            Name: "",
-            Position: 1,
-          },
-        ],
+
+        media: _.uniqBy(tracks, "disk_number").map((t: any) => ({
+          Format: "CD",
+          Name: "",
+          Position: t["disk_number"],
+        })),
         oldids: [],
         releasedate: d["release_date"],
         status: "Official",
         title: titleCase(d["title"]),
         track_count: d["nb_tracks"],
-        tracks: d["tracks"]["data"].map((t: any, idx: number) => ({
+        tracks: tracks.map((t: any, idx: number) => ({
           artistid: lidarr["id"],
           durationms: t["duration"] * 1000,
           id: `${fakeId(t["id"], "track")}`,
-          mediumnumber: 1,
+          mediumnumber: t["disk_number"],
           oldids: [],
           oldrecordingids: [],
           recordingid: fakeId(t["id"], "recording"),
@@ -207,7 +214,7 @@ export async function getAlbums(name: string) {
   return dtoRalbums;
 }
 
-export async function getArtists(
+export async function search(
   lidarr: any,
   query: string,
   isManual: boolean = true
