@@ -332,7 +332,11 @@ export async function getArtist(lidarr: any) {
   }
 
   const albums = await getAlbums(lidarr["artistname"]);
-  const existing = albums.map((a: any) => normalize(a["Title"]));
+
+  let existing = lidarr["Albums"].map((a: any) => normalize(a["Title"]));
+  if (process.env.PRIO_DEEMIX === "true") {
+    existing = albums.map((a: any) => normalize(a["Title"]));
+  }
   if (process.env.OVERRIDE_MB === "true") {
     lidarr["images"] = [
       {
