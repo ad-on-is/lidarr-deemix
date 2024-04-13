@@ -7,5 +7,5 @@ services:
       - 8080:8080 # optional, only if you want to expose the port to the host
     environment:
       - DEEMIX_ARL=xxxx
-      - OVERRIDE_MB=false # optional, set to true to override MusicBrainz completely !!! CAUTION !!! will delete all artists/albums imported from MB
-      - PRIO_DEEMIX=true # prioritize Deemix albums over Lidarr
+      - OVERRIDE_MB=false # set to true to override MusicBrainz completely !!! CAUTION !!! will delete all artists/albums imported from MB
+      - PRIO_DEEMIX=false # set to true to prioritize Deemix albums over Lidarr (adds dupliactes on existing albums, needs cleanup and rescan)
