@@ -5,7 +5,7 @@
 </div>
 
 ![container](https://github.com/ad-on-is/lidarr-deemix/actions/workflows/container.yml/badge.svg?branch=)
-[![Version](https://img.shields.io/github/tag/ad-on-is/lidarr-deemix.svg?style=flat)]()
+[![Version](https://img.shields.io/github/tag/ad-on-is/lidarr-deemix.svg?style=flat?branch=)]()
 [![GitHub stars](https://img.shields.io/github/stars/ad-on-is/lidarr-deemix.svg?style=social&label=Star)]()
 [![GitHub watchers](https://img.shields.io/github/watchers/ad-on-is/lidarr-deemix.svg?style=social&label=Watch)]()
 [![GitHub forks](https://img.shields.io/github/forks/ad-on-is/lidarr-deemix.svg?style=social&label=Fork)]()
