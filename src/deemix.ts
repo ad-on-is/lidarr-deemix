@@ -236,7 +236,10 @@ export async function search(
   if (lartist) {
     let dartist;
     for (const [i, d] of dartists.entries()) {
-      if (normalize(lartist["artist"]["artistname"]) === normalize(d["name"])) {
+      if (
+        lartist["artist"]["artistname"] === d["name"] ||
+        normalize(lartist["artist"]["artistname"]) === normalize(d["name"])
+      ) {
         dartist = d;
         didx = i;
         break;
@@ -297,6 +300,7 @@ export async function search(
       dtolartists = [
         dtolartists.filter((a) => {
           return (
+            a["artistname"] === decodeURIComponent(query) ||
             normalize(a["artistname"]) === normalize(decodeURIComponent(query))
           );
         })[0],
@@ -315,7 +319,9 @@ export async function search(
 
 async function getAritstByName(name: string) {
   const artists = await deemixArtists(name);
-  const artist = artists.find((a) => normalize(a["name"]) === normalize(name));
+  const artist = artists.find(
+    (a) => a["name"] === name || normalize(a["name"]) === normalize(name)
+  );
   return artist;
 }
 
