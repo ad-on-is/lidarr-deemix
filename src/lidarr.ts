@@ -18,3 +18,11 @@ export async function getLidarArtist(name: string) {
   }
   return null;
 }
+
+export async function getAllLidarrArtists() {
+  const res = await fetch(`${process.env.LIDARR_URL}/api/v1/artist`, {
+    headers: { "X-Api-Key": process.env.LIDARR_API_KEY as string },
+  });
+  const json = (await res.json()) as [];
+  return json;
+}

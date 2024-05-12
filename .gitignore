@@ -11,3 +11,5 @@ __pycache__
 node_modules
 dist/*
 deploy.sh
+.env.*
+.env

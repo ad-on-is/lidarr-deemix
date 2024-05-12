@@ -1,7 +1,8 @@
 import _ from "lodash";
 const deemixUrl = "http://127.0.0.1:7272";
-import { getLidarArtist } from "./lidarr.js";
+import { getAllLidarrArtists, getLidarArtist } from "./lidarr.js";
 import { titleCase, normalize } from "./helpers.js";
+import { link } from "fs";
 
 function fakeId(id: any, type: string) {
   // artist
@@ -126,22 +127,39 @@ function getType(rc: string) {
 export async function getAlbum(id: string) {
   const d = await deemixAlbum(id);
 
-  let lidarr: any = await getLidarArtist(d["artist"]["name"]);
-  if (lidarr === null || process.env.OVERRIDE_MB === "true") {
-    lidarr = {
-      id: fakeId(d["artist"]["id"], "artist"),
-      artistaliases: [],
-      artistname: d["artist"]["name"],
-      disambiguation: "",
-      overview: "!!--Imported from Deemix--!!",
-      genres: [],
-      images: [],
-      links: [],
-      oldids: [],
-      sortname: (d["artist"]["name"] as string).split(" ").reverse().join(", "),
-      status: "active",
-      type: "Artist",
-    };
+  const contributors = d["contributors"].map((c: any) => ({
+    id: fakeId(c["id"], "artist"),
+    artistaliases: [],
+    artistname: c["name"],
+    disambiguation: "",
+    overview: "!!--Imported from Deemix--!!",
+    genres: [],
+    images: [],
+    links: [],
+    oldids: [],
+    sortname: (c["name"] as string).split(" ").reverse().join(", "),
+    status: "active",
+    type: "Artist",
+  }));
+
+  const lidarrArtists = await getAllLidarrArtists();
+
+  let lidarr = null;
+  let deemix = null;
+
+  for (let la of lidarrArtists) {
+    for (let c of contributors) {
+      if (
+        la["artistName"] === c["artistname"] ||
+        normalize(la["artistName"]) === normalize(c["artistname"])
+      ) {
+        lidarr = la;
+        deemix = c;
+      }
+    }
+  }
+  if (process.env.OVERRIDE_MB === "true") {
+    lidarr = deemix;
   }
 
   const tracks = await deemixTracks(d["id"]);
@@ -149,7 +167,7 @@ export async function getAlbum(id: string) {
   return {
     aliases: [],
     artistid: lidarr["id"],
-    artists: [lidarr],
+    artists: contributors,
     disambiguation: "",
     genres: [],
     id: `${fakeId(d["id"], "album")}`,

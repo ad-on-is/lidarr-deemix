@@ -41,6 +41,8 @@ This tool helps to enrich Lidarr, by providing a custom proxy, that _hooks into_
   - **DEEMIX_ARL=xxx** your deezer ARL (get it from your browsers cookies)
   - **PRIO_DEEMIX=true** If albums with the same name exist, prioritize the ones comming from deemix
   - **OVERRIDE_MB=true** override MusicBrainz completely - **WARNING!** This will delete all your artists/albums imported from MusicBrainz.
+  - **LIDARR_URL=http://lidarr:8686** The URL of your Lidarr instance (with port), so this library can communicate with it. Important for **OVERRIDE_MB**
+  - **LIDARR_API_KEY=xxx** The Lidarr API Key. Important for **OVERRIDE_MB**
 - Go to **Lidarr -> Settings -> General**
   - **Certificate Validation:** to _Disabled_
   - **Use Proxy:** ✅

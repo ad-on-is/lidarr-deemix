@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 import Fastify from "fastify";
 import _ from "lodash";
+import dotenv from "dotenv";
 import {
   search,
   getArtist,
@@ -13,6 +14,9 @@ import { removeKeys } from "./helpers.js";
 
 const lidarrApiUrl = "https://api.lidarr.audio";
 const scrobblerApiUrl = "https://ws.audioscrobbler.com";
+
+dotenv.config();
+
 const fastify = Fastify({
   logger: {
     level: "error",

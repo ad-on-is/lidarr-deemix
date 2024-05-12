@@ -5,7 +5,7 @@
     "start": "tsc && ts-node --project tsconfig.tsnode.json dist/index",
     "dev": "tsc-watch --onSuccess \"node ./dist/index.js\"",
     "dev:override": "OVERRIDE_MB=true tsc-watch --onSuccess \"node ./dist/index.js\"",
-    "dev:prio": "PRIO_DEEMIX=true tsc-watch --onSuccess \"node ./dist/index.js\""
+    "dev:prio": "PRIO_DEEMIX=true tsc-watch --onSuccess \" node ./dist/index.js\""
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
@@ -19,6 +19,7 @@
   "dependencies": {
     "@types/lodash": "^4.17.0",
     "@types/node-fetch": "^2.6.11",
+    "dotenv": "^16.4.5",
     "fastify": "^4.26.2",
     "latinize": "^2.0.0",
     "lodash": "^4.17.21",
