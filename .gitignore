@@ -13,3 +13,4 @@ dist/*
 deploy.sh
 .env.*
 .env
+python/env
