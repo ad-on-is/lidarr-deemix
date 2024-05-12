@@ -52,8 +52,3 @@ This tool helps to enrich Lidarr, by providing a custom proxy, that _hooks into_
   - **Bypass Proxy for local addresses:** ✅
 
 ![settings](./images/lidarr-deemix-conf.png)
-
-> [!NOTE]
-> The folder `/lidarr-deemix-certs` must be mounted to `/usr/local/share/ca-certificates` within the Lidarr container.
-
-> Also `/var/run/docker.sock/` is needed, so lidarr-deemix can connect to lidarr and execute `update-ca-certificates`. If this is an issue, you have to manually execute that command, each time you restart the Lidarr container.
