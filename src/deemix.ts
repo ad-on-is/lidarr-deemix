@@ -1,6 +1,6 @@
 import _ from "lodash";
 const deemixUrl = "http://127.0.0.1:7272";
-import { getAllLidarrArtists, getLidarArtist } from "./lidarr.js";
+import { getAllLidarrArtists } from "./lidarr.js";
 import { titleCase, normalize } from "./helpers.js";
 import { link } from "fs";
 
@@ -162,12 +162,26 @@ export async function getAlbum(id: string) {
     lidarr = deemix;
   }
 
-  const tracks = await deemixTracks(d["id"]);
+  const lidarr2 = {
+    id: lidarr["foreignArtistId"],
+    artistname: lidarr["artistName"],
+    artistaliases: [],
+    disambiguation: "",
+    overview: "",
+    genres: [],
+    images: [],
+    links: [],
+    oldids: [],
+    sortname: lidarr["artistName"].split(" ").reverse().join(", "),
+    status: "active",
+    type: "Arist",
+  };
 
+  const tracks = await deemixTracks(d["id"]);
   return {
     aliases: [],
-    artistid: lidarr["id"],
-    artists: contributors,
+    artistid: lidarr2["id"],
+    artists: [lidarr2],
     disambiguation: "",
     genres: [],
     id: `${fakeId(d["id"], "album")}`,
@@ -195,7 +209,7 @@ export async function getAlbum(id: string) {
         title: titleCase(d["title"]),
         track_count: d["nb_tracks"],
         tracks: tracks.map((t: any, idx: number) => ({
-          artistid: lidarr["id"],
+          artistid: lidarr2["id"],
           durationms: t["duration"] * 1000,
           id: `${fakeId(t["id"], "track")}`,
           mediumnumber: t["disk_number"],
