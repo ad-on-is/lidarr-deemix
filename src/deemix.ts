@@ -326,6 +326,22 @@ export async function search(
     },
   }));
 
+  if (lidarr.length === 0) {
+    const sorted = [];
+
+    for (const a of dtolartists) {
+      if (
+        a.artist.artistname === decodeURIComponent(query) ||
+        normalize(a.artist.artistname) === normalize(decodeURIComponent(query))
+      ) {
+        sorted.unshift(a);
+      } else {
+        sorted.push(a);
+      }
+    }
+    dtolartists = sorted;
+  }
+
   if (!isManual) {
     dtolartists = dtolartists.map((a) => a.artist);
     if (process.env.OVERRIDE_MB === "true") {
