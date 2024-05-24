@@ -126,7 +126,6 @@ function getType(rc: string) {
 
 export async function getAlbum(id: string) {
   const d = await deemixAlbum(id);
-
   const contributors = d["contributors"].map((c: any) => ({
     id: fakeId(c["id"], "artist"),
     artistaliases: [],
@@ -158,24 +157,41 @@ export async function getAlbum(id: string) {
       }
     }
   }
+
+  let lidarr2: any = {};
+
   if (process.env.OVERRIDE_MB === "true") {
     lidarr = deemix;
+    lidarr2 = {
+      id: lidarr["id"],
+      artistname: lidarr["artistname"],
+      artistaliases: [],
+      disambiguation: "",
+      overview: "",
+      genres: [],
+      images: [],
+      links: [],
+      oldids: [],
+      sortname: lidarr["artistname"].split(" ").reverse().join(", "),
+      status: "active",
+      type: "Arist",
+    };
+  } else {
+    lidarr2 = {
+      id: lidarr!["foreignArtistId"],
+      artistname: lidarr!["artistName"],
+      artistaliases: [],
+      disambiguation: "",
+      overview: "",
+      genres: [],
+      images: [],
+      links: [],
+      oldids: [],
+      sortname: lidarr!["artistName"].split(" ").reverse().join(", "),
+      status: "active",
+      type: "Arist",
+    };
   }
-
-  const lidarr2 = {
-    id: lidarr["foreignArtistId"],
-    artistname: lidarr["artistName"],
-    artistaliases: [],
-    disambiguation: "",
-    overview: "",
-    genres: [],
-    images: [],
-    links: [],
-    oldids: [],
-    sortname: lidarr["artistName"].split(" ").reverse().join(", "),
-    status: "active",
-    type: "Arist",
-  };
 
   const tracks = await deemixTracks(d["id"]);
   return {
