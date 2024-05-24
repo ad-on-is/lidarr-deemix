@@ -390,6 +390,7 @@ async function getAritstByName(name: string) {
 }
 
 export async function getArtist(lidarr: any) {
+  if (lidarr["error"]) return lidarr;
   const artist = await getAritstByName(lidarr["artistname"]);
   if (typeof artist === "undefined") {
     return lidarr;
